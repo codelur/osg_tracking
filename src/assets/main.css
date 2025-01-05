@@ -1,0 +1,43 @@
+@import './base.css';
+
+@font-face {
+  src: url('../assets/RobotoMono.ttf') format('truetype');
+  font-family: 'cabinetgrotesk';
+  font-weight: bolder;
+  font-style: normal;
+}
+#app {
+  min-height: 100vh;
+  margin: 0;
+  font-weight: normal;
+  background: linear-gradient(45deg, #002e6d, #1ba6ff);
+  padding: 0;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: rgba(67, 77, 107, 0.61);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(224, 73%, 43%, 0.2);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    width: 100%;
+  }
+}
