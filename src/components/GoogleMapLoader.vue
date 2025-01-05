@@ -98,7 +98,6 @@ onMounted(async () => {
       map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: props.lat, lng: props.lng },
         zoom: 14,
-        mapId: '1a09fd8aba5ba4b8',
       })
 
       marker = new google.maps.marker.AdvancedMarkerElement({
