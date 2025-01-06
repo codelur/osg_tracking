@@ -1,7 +1,7 @@
 <template>
   <div class="device-info">
     <div class="device-info__fields">
-      <span class="device-info__name" v-if="anySettingIsTrue">{{ deviceInfo.name }}</span>
+      <span class="device-info__name" v-if="!anySettingIsTrue">{{ deviceInfo.name }}</span>
       <DeviceField
         label="Latitude"
         :value="deviceInfo.latitude"
