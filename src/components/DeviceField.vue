@@ -1,50 +1,56 @@
 <script>
 export default {
-  props: ['label', 'value', 'showComponent'],
+  props: {
+    label: {
+      type: String,
+      required: true,
+    },
+    value: {
+      type: [String, Number], // Allows both strings and numbers
+      default: '',
+    },
+    showComponent: {
+      type: Boolean,
+      required: true,
+    },
+  },
 }
 </script>
 
 <template>
   <div v-if="showComponent" class="field__container">
-    <label class="field__label">{{ label }} </label>
+    <label class="field__label">{{ label }}</label>
     <span class="field__value">{{ value }}</span>
   </div>
 </template>
 
-<style>
-.field__label {
-  display: block;
-  width: 100%;
-  text-align: left;
-  font-weight: bold;
-  font-family: 'cabinetgrotesk';
-}
-
+<style scoped>
 .field__container {
   display: flex;
-  width: 25vh;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  width: 25vh;
   padding: 0.5rem;
-  margin: 5px;
-  border-bottom: 1px solid #ddd;
+  margin: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color, #ddd);
 }
 
 .field__label {
+  width: 100%;
+  text-align: left;
   font-weight: bold;
-  color: var(--field-label-color);
-  flex-basis: 40%;
+  font-family: 'cabinetgrotesk', sans-serif;
+  color: var(--field-label-color, #333);
+  margin-bottom: 0.25rem;
 }
 
 .field__value {
-  color: var(--field-value-color);
-  flex-basis: 60%;
   width: 100%;
   text-align: right;
-  text-align: right;
   word-wrap: break-word;
-  font-family: 'cabinetgrotesk';
+  font-family: 'cabinetgrotesk', sans-serif;
+  color: var(--field-value-color, #555);
 }
 
 @media (max-width: 768px) {
@@ -59,9 +65,8 @@ export default {
   }
 }
 
-@media screen and (min-width: 391px) and (max-width: 1024px) {
+@media (min-width: 391px) and (max-width: 1024px) {
   .field__container {
-    display: flex;
     width: 100%;
   }
 }

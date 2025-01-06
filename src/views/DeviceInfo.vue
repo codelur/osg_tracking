@@ -1,7 +1,3 @@
-<script setup>
-import DeviceField from '@/components/DeviceField.vue'
-import GoogleMapLoader from '@/components/GoogleMapLoader.vue'
-</script>
 <template>
   <div class="device-info">
     <div class="device-info__fields">
@@ -39,13 +35,14 @@ import GoogleMapLoader from '@/components/GoogleMapLoader.vue'
 </template>
 
 <script>
+import DeviceField from '@/components/DeviceField.vue'
+import GoogleMapLoader from '@/components/GoogleMapLoader.vue'
+
 export default {
   props: ['deviceId', 'settings', 'deviceInfo'],
   components: {
+    DeviceField,
     GoogleMapLoader,
-  },
-  watch: {
-    deviceId: 'loadDeviceInfo',
   },
   data() {
     return {
@@ -54,17 +51,22 @@ export default {
       visibleFields: {},
     }
   },
+  watch: {
+    deviceId: 'loadDeviceInfo',
+  },
   computed: {
     anySettingIsTrue() {
-      return !Object.values(this.settings).some((value) => value === true)
+      return Object.values(this.settings).some((value) => value === true)
     },
   },
   methods: {
     async loadDeviceInfo() {
-      while (!this.settings || Object.keys(this.settings).length === 0) {
-        await new Promise((resolve) => setTimeout(resolve, 100)) // Wait 100ms before checking again
+      if (!this.settings || Object.keys(this.settings).length === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 100)) // Wait for settings to load
+        return this.loadDeviceInfo() // Recurse until settings are available
       }
 
+      // Dynamically build the visible fields based on the settings
       Object.entries(this.deviceInfo).forEach(([key, value]) => {
         const visibilityKey = `show${key
           .split('_')
@@ -75,8 +77,13 @@ export default {
           this.visibleFields[key] = value
         }
       })
+
+      // Update map coordinates
       this.googleMapLat = this.deviceInfo.latitude
       this.googleMapLng = this.deviceInfo.longitude
+    },
+    capitalize(str) {
+      return str.replace(/^\w/, (c) => c.toUpperCase())
     },
   },
 }

@@ -1,107 +1,81 @@
 <script setup>
-//import arrayOfDevices from '../utils/constants.js'
-import DeviceInfo from './DeviceInfo.vue'
+import { ref, onMounted } from 'vue'
 import DevicesList from '@/components/DevicesList.vue'
-</script>
+import DeviceInfo from './DeviceInfo.vue'
 
-<script>
-export default {
-  components: {
-    DevicesList,
-    DeviceInfo,
-  },
-  data() {
-    return {
-      arrayOfDevices: [],
-      deviceValues: {},
-      render: false,
-      selectedLat: 34.069333051247725,
-      selectedLng: -118.28044832395406,
-      selectedDevice: '',
-      settings: {
-        showLatitude: false,
-        showLongitude: false,
-        showFactoryId: false,
-        showState: false,
-        showName: false,
-        showMake: false,
-        showModel: false,
-        showDriveStatus: false,
-        showOnline: false,
-      },
-    }
-  },
+import { getDeviceList, getSettings } from '@/services/services'
+// Reactive variables
+const arrayOfDevices = ref([])
+const deviceValues = ref({})
+const render = ref(false)
+const selectedDevice = ref('')
+const settings = ref({
+  showLatitude: false,
+  showLongitude: false,
+  showFactoryId: false,
+  showState: false,
+  showName: false,
+  showMake: false,
+  showModel: false,
+  showDriveStatus: false,
+  showOnline: false,
+})
 
-  methods: {
-    selectDevice(deviceId) {
-      this.selectedDevice = deviceId
-      this.getDeviceInfo()
-      // Handle the value received from the child
-    },
-
-    getDeviceInfo() {
-      let device = this.arrayOfDevices.find((item) => {
-        return item.device_id === this.selectedDevice
-      })
-
-      let currentDeviceValues = {
-        latitude: device.latest_device_point.lat,
-        longitude: device.latest_device_point.lng,
-        factory_id: device.factory_id,
-        drive_status: device.latest_device_point.device_state.drive_status,
-        state: device.active_state,
-        name: device.display_name,
-        make: device.make,
-        model: device.model,
-        online: device.online ? 'ON' : 'OFF',
-      }
-
-      if (JSON.stringify(this.deviceValues) !== JSON.stringify(currentDeviceValues)) {
-        this.deviceValues = { ...currentDeviceValues }
-      }
-
-      return currentDeviceValues
-    },
-
-    async getDeviceList() {
-      try {
-        const response = await this.$axios.get(
-          'https://app-625361629214.us-central1.run.app/api/getDevicesInfo',
-        )
-        this.arrayOfDevices = response.data.result_list
-
-        console.log('Loaded device Info:', this.deviceValues)
-      } catch (error) {
-        console.error('Error loading settings:', error)
-      }
-    },
-    async loadSettings() {
-      try {
-        const response = await this.$axios.get(
-          'https://app-625361629214.us-central1.run.app/api/getsettings',
-        )
-        this.settings = response.data
-
-        console.log('Loaded settings:', this.settings)
-      } catch (error) {
-        console.error('Error loading settings:', error)
-      } finally {
-        this.render = true // Set loading to false after settings are loaded
-      }
-    },
-  },
-  async mounted() {
-    await this.getDeviceList()
-    await this.loadSettings()
-    this.selectedDevice = this.arrayOfDevices[0].device_id
-    this.getDeviceInfo()
-    /*setInterval(async () => {
-      await this.getDeviceList()
-      this.getDeviceInfo()
-      console.log('Getting Device Info')
-    }, 6000)*/
-  },
+const selectDevice = (deviceId) => {
+  selectedDevice.value = deviceId
+  getDeviceInfo()
 }
+
+const getDeviceInfo = () => {
+  const device = arrayOfDevices.value.find((item) => item.device_id === selectedDevice.value)
+  const currentDeviceValues = {
+    latitude: device.latest_device_point.lat,
+    longitude: device.latest_device_point.lng,
+    factory_id: device.factory_id,
+    drive_status: device.latest_device_point.device_state.drive_status,
+    state: device.active_state,
+    name: device.display_name,
+    make: device.make,
+    model: device.model,
+    online: device.online ? 'ON' : 'OFF',
+  }
+
+  // Direct comparison instead of JSON stringify
+  if (
+    Object.keys(deviceValues.value).length === 0 ||
+    !Object.entries(currentDeviceValues).every(([key, value]) => deviceValues.value[key] === value)
+  ) {
+    deviceValues.value = { ...currentDeviceValues }
+  }
+
+  return currentDeviceValues
+}
+
+const loadDevicesList = async () => {
+  try {
+    const data = await getDeviceList()
+    arrayOfDevices.value = data.result_list
+  } catch (error) {
+    console.error('Error loading device list:', error)
+  }
+}
+
+const loadingSettings = async () => {
+  try {
+    settings.value = await getSettings()
+  } catch (error) {
+    console.error('Error loading settings:', error)
+  } finally {
+    render.value = true
+  }
+}
+
+onMounted(async () => {
+  await loadDevicesList()
+  await loadingSettings()
+  selectedDevice.value = arrayOfDevices.value[0]?.device_id || ''
+  getDeviceInfo()
+})
 </script>
 
 <template>
@@ -118,7 +92,7 @@ export default {
   background-color: white;
   justify-content: space-evenly;
   padding: 20px 10px;
-  background-image: url('../assets/unnamed.png');
+  background-image: url('../assets/gps.png');
   background-size: cover;
 }
 @media screen and (max-width: 430px) {

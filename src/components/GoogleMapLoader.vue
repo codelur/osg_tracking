@@ -4,8 +4,7 @@
 
 <script setup>
 import { onMounted, watch, defineProps } from 'vue'
-
-import axios from 'axios'
+import { getGoogleMapsScript } from '@/services/services'
 
 // Define component props
 const props = defineProps({
@@ -30,8 +29,7 @@ let infoWindow
 
 // Function to load the Google Maps script dynamically
 async function loadGoogleMapsScript() {
-  const response = await await axios.get('https://app-625361629214.us-central1.run.app/api/map')
-  const data = await response.data
+  const data = await getGoogleMapsScript()
 
   return new Promise((resolve, reject) => {
     // Check if the Google Maps API is already loaded
@@ -98,6 +96,7 @@ onMounted(async () => {
       map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: props.lat, lng: props.lng },
         zoom: 14,
+        mapId: '1a09fd8aba5ba4b8',
       })
 
       marker = new google.maps.marker.AdvancedMarkerElement({

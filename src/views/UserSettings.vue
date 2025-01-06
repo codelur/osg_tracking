@@ -1,5 +1,6 @@
 <script setup>
 import ToggleSwitch from '@/components/ToggleSwitch.vue'
+import { getSettings, saveSettings } from '@/services/services'
 </script>
 
 <script>
@@ -26,10 +27,7 @@ export default {
   methods: {
     async loadSettings() {
       try {
-        const response = await this.$axios.get(
-          'https://app-625361629214.us-central1.run.app/api/getsettings',
-        )
-        this.settings = response.data
+        this.settings = await getSettings()
 
         console.log('Loaded settings:', this.settings)
       } catch (error) {
@@ -39,35 +37,26 @@ export default {
       }
     },
 
-    saveSettings() {
-      // Send a POST request to the server to save settings
-      this.$axios
-        .post(
-          'https://app-625361629214.us-central1.run.app/api/savesettings',
-          JSON.stringify({
-            showLatitude: this.settings.showLatitude,
-            showLongitude: this.settings.showLongitude,
-            showFactoryId: this.settings.showFactoryId,
-            showState: this.settings.showState,
-            showName: this.settings.showName,
-            showMake: this.settings.showMake,
-            showModel: this.settings.showModel,
-            showDriveStatus: this.settings.showDriveStatus,
-            showOnline: this.settings.showOnline,
-          }),
-        )
+    formatLabel(key) {
+      return key
+        .replace(/^show/, '') // Remove "show" prefix
+        .replace(/([A-Z])/g, ' $1') // Add spaces before capital letters
+        .trim() // Remove leading/trailing spaces
+    },
 
-        .then((response) => {
-          console.log('Settings saved:', response)
-          const confirmation = document.querySelector('.usersettings__confirmation')
-          confirmation.classList.add('saved')
-          setTimeout(() => {
-            confirmation.classList.remove('saved')
-          }, 2000)
-        })
-        .catch((error) => {
-          console.error('Error saving settings:', error)
-        })
+    saveSettingsHandler() {
+      // Send a POST request to the server to save settings
+      try {
+        saveSettings(JSON.stringify(this.settings))
+        console.log('Settings saved successfully')
+        const confirmation = document.querySelector('.usersettings__confirmation')
+        confirmation.classList.add('saved')
+        setTimeout(() => {
+          confirmation.classList.remove('saved')
+        }, 2000)
+      } catch (error) {
+        console.error('Error saving settings:', error)
+      }
     },
   },
   mounted() {
@@ -79,61 +68,13 @@ export default {
   <div class="usersettings">
     <div class="usersettings__setup">
       <h2 class="usersettings__title">Configure the settings for display:</h2>
-      <div class="usersettings__container" v-if="render">
-        <div class="usersettings__toggles" v-if="render">
-          <ToggleSwitch
-            label="Latitude"
-            :value="settings.showLatitude"
-            v-model:checked="settings.showLatitude"
-          />
-          <ToggleSwitch
-            label="Longitude"
-            :value="settings.showLongitude"
-            v-model:checked="settings.showLongitude"
-          />
-          <ToggleSwitch
-            label="Factory ID"
-            :value="settings.showFactoryId"
-            v-model:checked="settings.showFactoryId"
-          />
-        </div>
-        <div class="usersettings__toggles" v-if="render">
-          <ToggleSwitch
-            label="Drive Status"
-            :value="settings.showDriveStatus"
-            v-model:checked="settings.showDriveStatus"
-          />
-          <ToggleSwitch
-            label="State"
-            :value="settings.showState"
-            v-model:checked="settings.showState"
-          />
-          <ToggleSwitch
-            label="Name"
-            :value="settings.showName"
-            v-model:checked="settings.showName"
-          />
-        </div>
-        <div class="usersettings__toggles" v-if="render">
-          <ToggleSwitch
-            label="Make"
-            :value="settings.showMake"
-            v-model:checked="settings.showMake"
-          />
-          <ToggleSwitch
-            label="Model"
-            :value="settings.showModel"
-            v-model:checked="settings.showModel"
-          />
-          <ToggleSwitch
-            label="Online"
-            :value="settings.showOnline"
-            v-model:checked="settings.showOnline"
-          />
+      <div class="usersettings__container">
+        <div v-for="(value, key, index) in settings" :key="key" class="usersettings__toggles">
+          <ToggleSwitch :label="formatLabel(key)" :value="value" v-model:checked="settings[key]" />
         </div>
       </div>
       <div class="usersettings__submit">
-        <button class="usersettings__button" @click="saveSettings">Save Settings</button>
+        <button class="usersettings__button" @click="saveSettingsHandler">Save Settings</button>
         <span class="usersettings__confirmation">✔</span>
       </div>
     </div>
@@ -161,13 +102,14 @@ export default {
 
 .usersettings__container {
   width: 100%;
-  display: flex;
-  gap: 50px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
   margin: 60px 0 60px 0;
+  max-width: 1500px;
 }
 
 .usersettings__toggles {
-  width: 30%;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -222,8 +164,12 @@ export default {
   .usersettings__setup {
     padding: 12px;
   }
+
   .usersettings__container {
+    display: flex;
     flex-direction: column;
+    gap: 12px;
+    margin: 28px 0;
   }
   .usersettings__toggles {
     width: 100%;
@@ -231,10 +177,6 @@ export default {
   .usersettings__title {
     margin: 0;
     font-size: 16px;
-  }
-  .usersettings__container {
-    gap: 12px;
-    margin: 28px 0;
   }
 }
 @media screen and (min-width: 391px) and (max-width: 1024px) {

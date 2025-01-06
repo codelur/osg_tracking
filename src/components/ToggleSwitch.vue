@@ -3,7 +3,6 @@ export default {
   props: {
     label: String,
     value: {
-      // Prop to accept initial value from parent
       type: Boolean,
       default: false, // Default value if not provided
     },
@@ -19,20 +18,15 @@ export default {
       },
     },
   },
-  methods: {
-    updateValue() {
-      this.checked = event.target.checked
-    },
-  },
 }
 </script>
 
 <template>
   <div class="switch__container">
     <p class="switch__container-label">{{ label }}</p>
-    <div class="switch__toogle">
-      <label className="switch">
-        <input type="checkbox" v-model="checked" class="switch__box" @change="updateValue" />
+    <div class="switch__toggle">
+      <label class="switch">
+        <input type="checkbox" v-model="checked" class="switch__box" />
         <span
           class="switch__slider"
           :class="[checked ? 'switch__slider-on' : 'switch__slider-off']"
@@ -46,7 +40,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 .switch__container {
   display: flex;
   border: 2px solid #002e6d;
@@ -56,10 +50,10 @@ export default {
   width: 50%;
   font-family: 'cabinetgrotesk';
   background: linear-gradient(45deg, #002e6d, #1ba6ff); /* Gradient background */
-
   padding: 12px;
   color: white;
 }
+
 .switch {
   display: flex;
   position: relative;
@@ -69,7 +63,7 @@ export default {
   cursor: pointer;
 }
 
-.switch__toogle {
+.switch__toggle {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,19 +97,22 @@ export default {
   left: 1px;
 }
 
-.switch__temp-on {
-  position: absolute;
-  text-align: center;
-  right: 10px;
-}
+.switch__temp-on,
 .switch__temp-off {
   position: absolute;
   text-align: center;
+}
+
+.switch__temp-on {
+  right: 10px;
+}
+
+.switch__temp-off {
   left: 10px;
 }
 
 p {
-  transition: color 1s ease-in-out;
+  transition: color 0.5s ease-in-out;
 }
 
 .switch__active {
@@ -125,10 +122,12 @@ p {
 .switch__inactive {
   color: black;
 }
-@media screen and (min-width: 800px) and (max-width: 932px) {
+
+@media screen and (min-width: 430px) and (max-width: 932px) {
   .switch__container-label {
     align-content: center;
   }
+
   .switch__container {
     height: 75px;
   }

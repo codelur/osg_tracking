@@ -2,34 +2,28 @@
   <div class="footer">
     <div class="footer__image">
       <img
-        alt="Company logo"
+        alt="One Step GPS company logo"
         class="footer__company-logo"
-        src="@/assets/onestepgps_white_logotype.svg
-      "
+        src="@/assets/onestepgps_white_logotype.svg"
         height="75px"
       />
     </div>
     <div class="footer__contact">
       <span class="footer__contact-title">CONTACT US</span>
-      <span class="footer__contact-address"
-        ><img
-          alt="GPS Image"
-          class="footer__contact-image"
-          src="@/assets/pin.png
-      "
-        />675 Glenoaks Blvd Suite C, San Fernando, CA 91340</span
-      >
-      <span class="footer__contact-phone">
-        <img alt="Phone Image" class="footer__contact-image" src="@/assets/phone.png" />(833)
-        478-6937
-      </span>
-      <span class="footer__contact-email">
-        <img
-          alt="Email Image"
-          class="footer__contact-image"
-          src="@/assets/mail.png"
-        />support@onestepgps.com
-      </span>
+      <div class="footer__contact-details">
+        <span class="footer__contact-address">
+          <img alt="Location pin icon" class="footer__contact-image" src="@/assets/pin.png" /> 675
+          Glenoaks Blvd Suite C, San Fernando, CA 91340
+        </span>
+        <span class="footer__contact-phone">
+          <img alt="Phone icon" class="footer__contact-image" src="@/assets/phone.png" /> (833)
+          478-6937
+        </span>
+        <span class="footer__contact-email">
+          <img alt="Email icon" class="footer__contact-image" src="@/assets/mail.png" />
+          support@onestepgps.com
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -65,6 +59,11 @@
   margin: 0 20px;
 }
 
+.footer__company-logo {
+  max-width: 95%;
+  height: auto;
+}
+
 @media screen and (max-width: 430px) {
   .footer {
     display: flex;
@@ -76,9 +75,7 @@
   .footer__image {
     width: 100%;
   }
-  .footer__company-logo {
-    width: 100%;
-  }
+
   .footer__contact-phone {
     display: block;
     margin-bottom: 12px;
@@ -90,9 +87,6 @@
 @media screen and (min-width: 391px) and (max-width: 1024px) {
   .footer__contact {
     font-size: 12px;
-  }
-  .footer__company-logo {
-    width: 95%;
   }
   .footer__contact-image {
     margin: 0 5px;
