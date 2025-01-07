@@ -66,6 +66,5 @@ This application displays GPS information of devices and their current locations
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd <repository-folder>
+   git clone https://github.com/codelur/osg_tracking
    ```
