@@ -7,6 +7,7 @@ This application displays GPS information of devices and their current locations
 - **Device List with Status**: Displays a list of devices with online/offline status (red/green dots).
 - **GPS Information Display**: Shows selected GPS data fields for the currently displayed device.
 - **Interactive Map**: Integrates Google Maps API to display the current location of the device with a marker and an information window.
+  - **Dynamic Updates**: The map and info window refresh every 6 seconds to reflect real-time data. If changes are made to the device information, the map and info window update immediately.
 - **Settings Page**: Allows users to configure which GPS data fields are shown in the main view.
 - **Responsive Design**: Optimized for mobile, tablet, and desktop devices with support for different screen orientations.
 - **One Step GPS Integration**: Retrieves device data from the One Step GPS account.
@@ -42,6 +43,7 @@ This application displays GPS information of devices and their current locations
 4. Displays a Google Map centered on the current location of the selected device.
    - A marker indicates the device's location.
    - An information window shows additional GPS data (if configured).
+   - **Real-Time Updates**: The map and info window automatically refresh every 6 seconds. If any changes occur in the device's data, the updates are reflected instantly.
 
 ### Settings Page
 
