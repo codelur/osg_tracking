@@ -53,6 +53,7 @@ export default {
   },
   watch: {
     deviceId: 'loadDeviceInfo',
+    deviceInfo: 'loadDeviceInfo',
   },
   computed: {
     anySettingIsTrue() {

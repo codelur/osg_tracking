@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import DevicesList from '@/components/DevicesList.vue'
 import DeviceInfo from './DeviceInfo.vue'
 
@@ -7,6 +7,7 @@ import { getDeviceList, getSettings } from '@/services/services'
 // Reactive variables
 const arrayOfDevices = ref([])
 const deviceValues = ref({})
+let intervalId = null
 const render = ref(false)
 const selectedDevice = ref('')
 const settings = ref({
@@ -40,7 +41,7 @@ const getDeviceInfo = () => {
     online: device.online ? 'ON' : 'OFF',
   }
 
-  // Direct comparison instead of JSON stringify
+  // Direct comparison to see if the device info has changed
   if (
     Object.keys(deviceValues.value).length === 0 ||
     !Object.entries(currentDeviceValues).every(([key, value]) => deviceValues.value[key] === value)
@@ -75,7 +76,19 @@ onMounted(async () => {
   await loadingSettings()
   selectedDevice.value = arrayOfDevices.value[0]?.device_id || ''
   getDeviceInfo()
-})
+  intervalId = setInterval(async () => {
+    await loadDevicesList()
+    getDeviceInfo()
+    console.log('Getting Device Info - 6 seconds')
+  }, 6000)
+}),
+  onUnmounted(() => {
+    // Clear the interval when the component is destroyed
+    if (intervalId) {
+      clearInterval(intervalId)
+      console.log('Interval cleared')
+    }
+  })
 </script>
 
 <template>

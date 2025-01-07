@@ -68,7 +68,7 @@ export default {
   <div class="usersettings">
     <div class="usersettings__setup">
       <h2 class="usersettings__title">Configure the settings for display:</h2>
-      <div class="usersettings__container">
+      <div class="usersettings__container" v-if="render">
         <div v-for="(value, key, index) in settings" :key="key" class="usersettings__toggles">
           <ToggleSwitch :label="formatLabel(key)" :value="value" v-model:checked="settings[key]" />
         </div>
