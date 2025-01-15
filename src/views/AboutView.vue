@@ -79,7 +79,7 @@ onMounted(async () => {
   intervalId = setInterval(async () => {
     await loadDevicesList()
     getDeviceInfo()
-    console.log('Getting Device Info - 6 seconds')
+    console.log('Getting Device Info - 6 seconds interval')
   }, 6000)
 }),
   onUnmounted(() => {
